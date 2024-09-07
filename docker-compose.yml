@@ -1,0 +1,16 @@
+services:
+    dstargateway:
+        image: dstargateway
+        build:
+            dockerfile: Docker/Dockerfile
+        volumes:
+            - ./docker-data:/usr/local/etc/dstargateway.d/
+            - ./docker-logs:/var/log/dstargateway/
+        entrypoint: /start-dstargateway.sh
+
+    dstartimeserver:
+        image: dstargateway
+        volumes:
+            - ./docker-data:/usr/local/etc/dstargateway.d/
+            - ./docker-logs:/var/log/dstargateway/
+        entrypoint: /start-timeserver.sh

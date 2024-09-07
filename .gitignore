@@ -1,3 +1,7 @@
+# Docker Related
+docker-data
+docker-logs
+
 # Prerequisites
 *.d
 
