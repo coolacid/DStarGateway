@@ -21,6 +21,7 @@
 
 #include <cstdio>
 #include "DTMF.h"
+#include "Log.h"
 
 const unsigned char DTMF_MASK[] = {0x82U, 0x08U, 0x20U, 0x82U, 0x00U, 0x00U, 0x82U, 0x00U, 0x00U};
 const unsigned char DTMF_SIG[]  = {0x82U, 0x08U, 0x20U, 0x82U, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U};
@@ -104,6 +105,8 @@ bool CDTMF::decode(const unsigned char* ambe, bool end)
 		else if (sym0 == DTMF_SYMH[0] && sym1 == DTMF_SYMH[1] && sym2 == DTMF_SYMH[2] && sym3 == DTMF_SYMH[3])
 			c = '#';
 
+		CLog::logTrace("Received DTMF Tone %c", c);
+
 		if (c == m_lastChar) {
 			m_pressCount++;
 		} else {
@@ -120,7 +123,7 @@ bool CDTMF::decode(const unsigned char* ambe, bool end)
 		return c != ' ';
 	} else {
 		// If it is not a DTMF Code
-		if ((end || m_releaseCount >= 100U) && m_data.size() > 0U) {
+		if ((end || m_releaseCount >= 100U) && m_data.length() > 0U) {
 			m_command = m_data;
 			m_data.clear();
 			m_releaseCount = 0U;
@@ -176,6 +179,7 @@ std::string CDTMF::translate()
 
 void CDTMF::reset()
 {
+	CLog::logTrace("DTMF Reset");
 	m_data.clear();
 	m_command.clear();
 	m_pressed = false;
