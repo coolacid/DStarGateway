@@ -21,7 +21,7 @@
 
 #include <string>
 
-class CXLXHostsFileDownloader {
+class CHostsFileDownloader {
 public:
 	static std::string download(const std::string & xlxHostsFileURL);
 private:

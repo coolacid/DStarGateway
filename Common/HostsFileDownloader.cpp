@@ -20,17 +20,17 @@
 #include <cstdio>
 #include <curl/curl.h>
 
-#include "XLXHostsFileDownloader.h"
+#include "HostsFileDownloader.h"
 #include "Log.h"
  
-size_t CXLXHostsFileDownloader::write_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
+size_t CHostsFileDownloader::write_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
     size_t written = fwrite(ptr, size, nmemb, stream);
     return written;
 }
 
-/* wxHTTP randomly crashes when called on a worker thread, this must be called from main thread ! */
-std::string CXLXHostsFileDownloader::download(const std::string & xlxHostsFileURL)
+
+std::string CHostsFileDownloader::download(const std::string & xlxHostsFileURL)
 {
     CURL *curl;
     FILE *fp;

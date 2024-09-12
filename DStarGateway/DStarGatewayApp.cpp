@@ -343,7 +343,7 @@ bool CDStarGatewayApp::createThread()
 	TXLX xlxConfig;
 	m_config->getXLX(xlxConfig);
 	CLog::logInfo("XLX enabled: %d, Hosts file url: %s", int(xlxConfig.enabled), xlxConfig.url.c_str());
-	m_thread->setXLX(xlxConfig.enabled, xlxConfig.enabled ? CXLXHostsFileDownloader::download(xlxConfig.url) : "");
+	m_thread->setXLX(xlxConfig.enabled, xlxConfig.enabled ? CHostsFileDownloader::download(xlxConfig.url) : "");
 
 	// Setup Remote
 	TRemote remoteConfig;
