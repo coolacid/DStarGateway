@@ -41,7 +41,7 @@
 #include "Version.h"
 #include "GitVersion.h"
 #include "RepeaterProtocolHandlerFactory.h"
-#include "XLXHostsFileDownloader.h"
+#include "HostsFileDownloader.h"
 #include "Log.h"
 #include "LogFileTarget.h"
 #include "LogConsoleTarget.h"
