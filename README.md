@@ -89,7 +89,7 @@ git checkout develop
 ## 3.4. Prerequisites and dependencies
 Before first time building you need to install dependencies and prerequisites
 ```
-sudo apt install build-essential libcurl4-openssl-dev libboost-dev
+sudo apt install build-essential libcurl4-openssl-dev libboost-dev bind9-host
 ```
 If you are going to build with gpsd support, also install libgps-dev
 ```
