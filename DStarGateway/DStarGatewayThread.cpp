@@ -88,7 +88,6 @@ m_dplusMaxDongles(0U),
 m_dplusLogin(),
 m_dcsEnabled(true),
 m_xlxEnabled(true),
-m_xlxHostsFileName(),
 m_ccsEnabled(true),
 m_ccsHost(),
 m_infoEnabled(true),
@@ -599,10 +598,9 @@ void CDStarGatewayThread::setDCS(bool enabled)
 	m_dcsEnabled = enabled;
 }
 
-void CDStarGatewayThread::setXLX(bool enabled, const std::string& xlxHostsFileName)
+void CDStarGatewayThread::setXLX(bool enabled)
 {
 	m_xlxEnabled 	 = enabled;
-	m_xlxHostsFileName = xlxHostsFileName;
 }
 
 #ifdef USE_CCS
@@ -1150,7 +1148,8 @@ void CDStarGatewayThread::loadGateways()
 void CDStarGatewayThread::loadAllReflectors()
 {
 	if (m_xlxEnabled) {
-		loadReflectors(m_xlxHostsFileName, DP_DCS);
+		std::string fileName = m_dataDir + "/" + DPLUS_HOSTS_FILE_NAME;
+		loadReflectors(fileName, DP_DCS);
 	}
 	
 	if (m_dplusEnabled) {

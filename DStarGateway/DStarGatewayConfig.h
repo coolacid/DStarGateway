@@ -102,16 +102,19 @@ typedef struct {
 typedef struct {
 	bool enabled;
 	unsigned int maxDongles;
+	std::string hostfileUrl;
 } TDextra;
 
 typedef struct {
 	bool enabled;
 	std::string login;
 	unsigned int maxDongles;
+	std::string hostfileUrl;
 } TDplus;
 
 typedef struct {
 	bool enabled;
+	std::string hostfileUrl;
 } TDCS;
 
 typedef struct {
@@ -120,7 +123,7 @@ typedef struct {
 
 typedef struct {
 	bool enabled;
-	std::string url;
+	std::string hostfileUrl;
 } TXLX;
 
 typedef struct {

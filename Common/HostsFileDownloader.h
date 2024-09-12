@@ -23,7 +23,7 @@
 
 class CHostsFileDownloader {
 public:
-	static std::string download(const std::string & xlxHostsFileURL);
+	static bool download(const std::string & hostsFileURL, const std::string & hostFilePath);
 private:
 	static size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream);
 };

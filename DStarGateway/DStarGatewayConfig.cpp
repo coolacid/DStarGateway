@@ -83,9 +83,9 @@ bool CDStarGatewayConfig::loadDaemon(const CConfig & cfg)
 bool CDStarGatewayConfig::loadXLX(const CConfig & cfg)
 {
 	bool ret = cfg.getValue("xlx", "enabled", m_xlx.enabled, true);
-	ret = cfg.getValue("xlx", "hostfileUrl", m_xlx.url, 0, 1024, "") && ret;
+	ret = cfg.getValue("xlx", "hostfileUrl", m_xlx.hostfileUrl, 0, 1024, "") && ret;
 
-	m_xlx.enabled = m_xlx.enabled && !m_xlx.url.empty();
+	m_xlx.enabled = m_xlx.enabled;
 
 	return ret;
 }
@@ -105,6 +105,7 @@ bool CDStarGatewayConfig::loadDextra(const CConfig & cfg)
 {
 	bool ret = cfg.getValue("dextra", "enabled", m_dextra.enabled, true);
 	ret = cfg.getValue("dextra", "maxDongles", m_dextra.maxDongles, 1U, 5U, 5U) && ret;
+	ret = cfg.getValue("dextra", "hostfileUrl", m_dextra.hostfileUrl, 0, 1024, "") && ret;
 	return ret;
 }
 
@@ -113,6 +114,7 @@ bool CDStarGatewayConfig::loadDPlus(const CConfig & cfg)
 	bool ret = cfg.getValue("dplus", "enabled", m_dplus.enabled, true);
 	ret = cfg.getValue("dplus", "maxDongles", m_dplus.maxDongles, 1U, 5U, 5U) && ret;
 	ret = cfg.getValue("dplus", "login", m_dplus.login, 0, LONG_CALLSIGN_LENGTH, m_gateway.callsign) && ret;
+	ret = cfg.getValue("dplus", "hostfileUrl", m_dplus.hostfileUrl, 0, 1024, "") && ret;
 
 	m_dplus.enabled = m_dplus.enabled && !m_dplus.login.empty();
 	m_dplus.login = CUtils::ToUpper(m_dplus.login);
@@ -123,6 +125,7 @@ bool CDStarGatewayConfig::loadDPlus(const CConfig & cfg)
 bool CDStarGatewayConfig::loadDCS(const CConfig & cfg)
 {
 	bool ret = cfg.getValue("dcs", "enabled", m_dcs.enabled, true);
+	ret = cfg.getValue("dcs", "hostfileUrl", m_dcs.hostfileUrl, 0, 1024, "") && ret;
 	return ret;
 }
 
