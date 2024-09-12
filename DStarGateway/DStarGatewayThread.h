@@ -61,7 +61,7 @@ public:
 	virtual void setDExtra(bool enabled, unsigned int maxDongles);
 	virtual void setDPlus(bool enabled, unsigned int maxDongles, const std::string& login);
 	virtual void setDCS(bool enabled);
-	virtual void setXLX(bool enabled, const std::string& fileName);
+	virtual void setXLX(bool enabled);
 #ifdef USE_CCS
 	virtual void setCCS(bool enabled, const std::string& host);
 #endif
@@ -112,7 +112,6 @@ private:
 	std::string                  m_dplusLogin;
 	bool                      m_dcsEnabled;
 	bool			  m_xlxEnabled;
-	std::string		  m_xlxHostsFileName;
 	bool                      m_ccsEnabled;
 	std::string                  m_ccsHost;
 	bool                      m_infoEnabled;
