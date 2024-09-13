@@ -405,16 +405,16 @@ void* CDStarGatewayThread::Entry()
 	}
 	catch (std::exception& e) {
 		std::string message(e.what());
-		CLog::logFatal("Exception raised in the main thread - \"%s\"", message.c_str());
+		CLog::logFatal("Exception raised in the DStar Gateway thread - \"%s\"", message.c_str());
 		throw;
 	}
 	catch (...) {
-		CLog::logFatal("Unknown exception raised in the main thread");
+		CLog::logFatal("Unknown exception raised in the DStar Gateway thread");
 		throw;
 	}
 #endif
 
-	CLog::logInfo("Stopping the ircDDB Gateway thread");
+	CLog::logInfo("Stopping the DStar Gateway thread");
 
 	// Unlink from all reflectors
 	CDExtraHandler::unlink();
