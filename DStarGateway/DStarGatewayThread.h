@@ -17,8 +17,8 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	IRCDDBGatewayThread_H
-#define	IRCDDBGatewayThread_H
+#ifndef	DStarGatewayThread_H
+#define	DStarGatewayThread_H
 
 #include "DummyRepeaterProtocolHandler.h"
 #include "IcomRepeaterProtocolHandler.h"
