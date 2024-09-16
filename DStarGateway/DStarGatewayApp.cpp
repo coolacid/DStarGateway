@@ -68,8 +68,9 @@ int main(int argc, char *argv[])
 	signal(SIGILL, CDStarGatewayApp::sigHandlerFatal);
 	signal(SIGFPE, CDStarGatewayApp::sigHandlerFatal);
 	signal(SIGABRT, CDStarGatewayApp::sigHandlerFatal);
-	signal(SIGTERM, CDStarGatewayApp::sigHandler);
-	signal(SIGINT, CDStarGatewayApp::sigHandler);
+	signal(SIGTERM, CDStarGatewayApp::sigHandlerExit);
+	signal(SIGINT, CDStarGatewayApp::sigHandlerExit);
+	signal(SIGUSR1, CDStarGatewayApp::sigHandlerUSR);
 
 	setbuf(stdout, NULL);
 	if (2 != argc) {
@@ -370,7 +371,7 @@ bool CDStarGatewayApp::createThread()
 	return true;
 }
 
-void CDStarGatewayApp::sigHandler(int sig)
+void CDStarGatewayApp::sigHandlerExit(int sig)
 {
 	CLog::logInfo("Caught signal : %s, shutting down gateway", strsignal(sig));
 
@@ -390,6 +391,15 @@ void CDStarGatewayApp::sigHandlerFatal(int sig)
 	fprintf(stderr, "Stack Trace : \n%s\n", stackTrace.str().c_str());
 #endif
 	exit(3);
+}
+
+void CDStarGatewayApp::sigHandlerUSR(int sig)
+{
+	if(sig == SIGUSR1) {
+		CLog::logInfo("Caught signal : %s, updating host files", strsignal(sig));
+
+		CHostsFilesManager::UpdateHostsAsync(); // call and forget
+	}
 }
 
 void CDStarGatewayApp::terminateHandler()

@@ -38,6 +38,7 @@ public:
 	void run();
 
 	static void sigHandlerFatal(int sig);
-	static void sigHandler(int sig);
+	static void sigHandlerExit(int sig);
+	static void sigHandlerUSR(int sig);
 	static void terminateHandler();
 };
