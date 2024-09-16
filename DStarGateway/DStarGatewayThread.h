@@ -17,8 +17,8 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	IRCDDBGatewayThread_H
-#define	IRCDDBGatewayThread_H
+#ifndef	DStarGatewayThread_H
+#define	DStarGatewayThread_H
 
 #include "DummyRepeaterProtocolHandler.h"
 #include "IcomRepeaterProtocolHandler.h"
@@ -145,14 +145,6 @@ private:
 	void processDCS();
 	void processG2();
 	void processDD();
-
-	void loadGateways();
-	void loadAllReflectors();
-	void loadReflectors(std::string hostFileName, DSTAR_PROTOCOL proto);
-	void loadDExtraReflectors(const std::string& fileName);
-	void loadDPlusReflectors(const std::string& fileName);
-	void loadDCSReflectors(const std::string& fileName);
-	void loadXLXReflectors();
 
 	void writeStatus();
 

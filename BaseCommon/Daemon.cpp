@@ -113,7 +113,7 @@ DAEMONIZE_RESULT CDaemon::daemonise(const std::string& pidFile, const std::strin
 
 #ifdef DOUBLE_FORK
 	// Fork off for the second time. Some litterature says it is best to fork 2 times so that the process never can open a terminal.
-	// However it messes up systemd, event when unit is set as forking
+	// However it messes up systemd, even when unit is set as forking
 	pid = fork();
 
 	// An error occurred

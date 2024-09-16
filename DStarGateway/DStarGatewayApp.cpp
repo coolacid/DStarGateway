@@ -35,7 +35,6 @@
 #include "DStarGatewayConfig.h"
 #include "DStarGatewayApp.h"
 #include "Version.h"
-#include "HostsFileDownloader.h"
 #include "IRCDDBMultiClient.h"
 #include "IRCDDBClient.h"
 #include "Utils.h"
@@ -50,6 +49,7 @@
 #include "Daemon.h"
 #include "APRSISHandlerThread.h"
 #include "DummyAPRSHandlerThread.h"
+#include "HostsFilesManager.h"
 
 CDStarGatewayApp * CDStarGatewayApp::g_app = nullptr;
 const std::string BANNER_1 = CStringUtils::string_format("%s Copyright (C) %s\n", FULL_PRODUCT_NAME.c_str(), VENDOR_NAME.c_str());
@@ -68,8 +68,9 @@ int main(int argc, char *argv[])
 	signal(SIGILL, CDStarGatewayApp::sigHandlerFatal);
 	signal(SIGFPE, CDStarGatewayApp::sigHandlerFatal);
 	signal(SIGABRT, CDStarGatewayApp::sigHandlerFatal);
-	signal(SIGTERM, CDStarGatewayApp::sigHandler);
-	signal(SIGINT, CDStarGatewayApp::sigHandler);
+	signal(SIGTERM, CDStarGatewayApp::sigHandlerExit);
+	signal(SIGINT, CDStarGatewayApp::sigHandlerExit);
+	signal(SIGUSR1, CDStarGatewayApp::sigHandlerUSR);
 
 	setbuf(stdout, NULL);
 	if (2 != argc) {
@@ -325,29 +326,32 @@ bool CDStarGatewayApp::createThread()
 	TDextra dextraConfig;
 	m_config->getDExtra(dextraConfig);
 	CLog::logInfo("DExtra enabled: %d, max. dongles: %u, url: %s", int(dextraConfig.enabled), dextraConfig.maxDongles, dextraConfig.hostfileUrl.c_str());
-	if(dextraConfig.enabled) CHostsFileDownloader::download(dextraConfig.hostfileUrl, paths.dataDir + "/" + DEXTRA_HOSTS_FILE_NAME);
 	m_thread->setDExtra(dextraConfig.enabled, dextraConfig.maxDongles);
 
 	// Setup DCS
 	TDCS dcsConfig;
 	m_config->getDCS(dcsConfig);
 	CLog::logInfo("DCS enabled: %d, url: %s", int(dcsConfig.enabled), dcsConfig.hostfileUrl.c_str());
-	if(dextraConfig.enabled) CHostsFileDownloader::download(dcsConfig.hostfileUrl, paths.dataDir + "/" + DCS_HOSTS_FILE_NAME);
 	m_thread->setDCS(dcsConfig.enabled);
 
 	// Setup DPlus
 	TDplus dplusConfig;
 	m_config->getDPlus(dplusConfig);
 	CLog::logInfo("D-Plus enabled: %d, max. dongles: %u, login: %s, url: %s", int(dplusConfig.enabled), dplusConfig.maxDongles, dplusConfig.login.c_str(), dplusConfig.hostfileUrl.c_str());
-	if(dplusConfig.enabled) CHostsFileDownloader::download(dplusConfig.hostfileUrl, paths.dataDir + "/" + DPLUS_HOSTS_FILE_NAME);
 	m_thread->setDPlus(dplusConfig.enabled, dplusConfig.maxDongles, dplusConfig.login);
 
 	// Setup XLX
 	TXLX xlxConfig;
 	m_config->getXLX(xlxConfig);
 	CLog::logInfo("XLX enabled: %d, Hosts file url: %s", int(xlxConfig.enabled), xlxConfig.hostfileUrl.c_str());
-	if(xlxConfig.enabled) CHostsFileDownloader::download(xlxConfig.hostfileUrl, paths.dataDir + "/" + XLX_HOSTS_FILE_NAME);
 	m_thread->setXLX(xlxConfig.enabled);
+
+	// Setup hostsfiles
+	CHostsFilesManager::setHostFilesDirectories(paths.dataDir, paths.customHostsFiles);
+	CHostsFilesManager::setDextra(dextraConfig.enabled, dextraConfig.hostfileUrl);
+	CHostsFilesManager::setDCS   (dcsConfig.enabled,    dcsConfig.hostfileUrl);
+	CHostsFilesManager::setDPlus (dplusConfig.enabled,  dplusConfig.hostfileUrl);
+	CHostsFilesManager::setXLX   (xlxConfig.enabled, 	xlxConfig.hostfileUrl);
 
 	// Setup Remote
 	TRemote remoteConfig;
@@ -367,7 +371,7 @@ bool CDStarGatewayApp::createThread()
 	return true;
 }
 
-void CDStarGatewayApp::sigHandler(int sig)
+void CDStarGatewayApp::sigHandlerExit(int sig)
 {
 	CLog::logInfo("Caught signal : %s, shutting down gateway", strsignal(sig));
 
@@ -387,6 +391,15 @@ void CDStarGatewayApp::sigHandlerFatal(int sig)
 	fprintf(stderr, "Stack Trace : \n%s\n", stackTrace.str().c_str());
 #endif
 	exit(3);
+}
+
+void CDStarGatewayApp::sigHandlerUSR(int sig)
+{
+	if(sig == SIGUSR1) {
+		CLog::logInfo("Caught signal : %s, updating host files", strsignal(sig));
+
+		CHostsFilesManager::UpdateHostsAsync(); // call and forget
+	}
 }
 
 void CDStarGatewayApp::terminateHandler()
