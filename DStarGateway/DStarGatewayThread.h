@@ -146,14 +146,6 @@ private:
 	void processG2();
 	void processDD();
 
-	void loadGateways();
-	void loadAllReflectors();
-	void loadReflectors(std::string hostFileName, DSTAR_PROTOCOL proto);
-	void loadDExtraReflectors(const std::string& fileName);
-	void loadDPlusReflectors(const std::string& fileName);
-	void loadDCSReflectors(const std::string& fileName);
-	void loadXLXReflectors();
-
 	void writeStatus();
 
 	void readStatusFiles();

@@ -195,9 +195,14 @@ bool CDStarGatewayConfig::loadLog(const CConfig & cfg)
 bool CDStarGatewayConfig::loadPaths(const CConfig & cfg)
 {
 	bool ret = cfg.getValue("paths", "data", m_paths.dataDir, 0, 2048, "/usr/local/share/dstargateway.d/");
+	ret = cfg.getValue("customHostfiles", "data", m_paths.customHostsFiles, 0, 2048, "/usr/local/share/dstargateway.d/hostfiles.d/") && ret;
 
 	if(ret && m_paths.dataDir[m_paths.dataDir.length() - 1] != '/') {
 		m_paths.dataDir.push_back('/');
+	}
+
+	if(ret && m_paths.dataDir[m_paths.customHostsFiles.length() - 1] != '/') {
+		m_paths.customHostsFiles.push_back('/');
 	}
 
 	//TODO 20211226 check if directory are accessible

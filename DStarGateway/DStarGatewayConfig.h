@@ -80,6 +80,7 @@ typedef struct {
 
 typedef struct {
 	std::string dataDir;
+	std::string customHostsFiles;
 } Tpaths;
 
 typedef struct {
