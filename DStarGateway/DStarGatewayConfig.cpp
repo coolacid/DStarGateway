@@ -45,6 +45,7 @@ bool CDStarGatewayConfig::load()
 		ret = loadIrcDDB(cfg) && ret;
 		ret = loadRepeaters(cfg) && ret;
 		ret = loadPaths(cfg) && ret;
+		ret = loadHostsFiles(cfg) && ret;
 		ret = loadLog(cfg) && ret;
 		ret = loadAPRS(cfg) && ret;
 		ret = loadDextra(cfg) && ret;
@@ -195,14 +196,28 @@ bool CDStarGatewayConfig::loadLog(const CConfig & cfg)
 bool CDStarGatewayConfig::loadPaths(const CConfig & cfg)
 {
 	bool ret = cfg.getValue("paths", "data", m_paths.dataDir, 0, 2048, "/usr/local/share/dstargateway.d/");
-	ret = cfg.getValue("customHostfiles", "data", m_paths.customHostsFiles, 0, 2048, "/usr/local/share/dstargateway.d/hostfiles.d/") && ret;
 
 	if(ret && m_paths.dataDir[m_paths.dataDir.length() - 1] != '/') {
 		m_paths.dataDir.push_back('/');
 	}
 
-	if(ret && m_paths.dataDir[m_paths.customHostsFiles.length() - 1] != '/') {
-		m_paths.customHostsFiles.push_back('/');
+	//TODO 20211226 check if directory are accessible
+
+	return ret;
+}
+
+bool CDStarGatewayConfig::loadHostsFiles(const CConfig & cfg)
+{
+	bool ret = cfg.getValue("HostsFiles", "downloadedHostsFiles", m_hostsFiles.downloadedHostFiles, 0, 2048, "/usr/local/share/dstargateway.d/");
+	ret = cfg.getValue("HostsFiles", "customHostsfiles", m_hostsFiles.customHostsFiles, 0, 2048, "/usr/local/share/dstargateway.d/hostsfiles.d/");
+	ret = cfg.getValue("HostsFiles", "downloadTimer", m_hostsFiles.downloadTimeout, 24U, 0xffffffffU, 72U);
+
+	if(ret && m_hostsFiles.downloadedHostFiles[m_hostsFiles.downloadedHostFiles.length() - 1] != '/') {
+		m_hostsFiles.downloadedHostFiles.push_back('/');
+	}
+
+	if(ret && m_hostsFiles.customHostsFiles[m_hostsFiles.customHostsFiles.length() - 1] != '/') {
+		m_hostsFiles.downloadedHostFiles.push_back('/');
 	}
 
 	//TODO 20211226 check if directory are accessible
@@ -439,6 +454,11 @@ void CDStarGatewayConfig::getLog(TLog & log) const
 void CDStarGatewayConfig::getPaths(Tpaths & paths) const
 {
 	paths = m_paths;
+}
+
+void CDStarGatewayConfig::getHostsFiles(THostsFiles & hostsFiles) const
+{
+	hostsFiles = m_hostsFiles;
 }
 
 void CDStarGatewayConfig::getAPRS(TAPRS & aprs) const

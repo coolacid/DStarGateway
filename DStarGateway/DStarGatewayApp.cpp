@@ -347,7 +347,10 @@ bool CDStarGatewayApp::createThread()
 	m_thread->setXLX(xlxConfig.enabled);
 
 	// Setup hostsfiles
-	CHostsFilesManager::setHostFilesDirectories(paths.dataDir, paths.customHostsFiles);
+	THostsFiles hostsFilesConfig;
+	m_config->getHostsFiles(hostsFilesConfig);
+	CHostsFilesManager::setHostFilesDirectories(hostsFilesConfig.downloadedHostFiles, hostsFilesConfig.customHostsFiles);
+	CHostsFilesManager::setDownloadTimeout(3600 * hostsFilesConfig.downloadTimeout);
 	CHostsFilesManager::setDextra(dextraConfig.enabled, dextraConfig.hostfileUrl);
 	CHostsFilesManager::setDCS   (dcsConfig.enabled,    dcsConfig.hostfileUrl);
 	CHostsFilesManager::setDPlus (dplusConfig.enabled,  dplusConfig.hostfileUrl);

@@ -99,7 +99,7 @@ public:
     bool getValue(const std::string &section, const std::string& key, bool &value, bool defaultValue) const;
     bool getValue(const std::string &section, const std::string& key, int &value, int min, int max, int defaultValue) const;
     bool getValue(const std::string &section, const std::string& key, double &value, double min, double max, double defaultValue) const;
-    bool getValue(const std::string &section, const std::string& key, unsigned int &value, unsigned int min, unsigned int max,int defaultValue) const;
+    bool getValue(const std::string &section, const std::string& key, unsigned int &value, unsigned int min, unsigned int max, unsigned int defaultValue) const;
     bool getValue(const std::string &section, const std::string& key, unsigned char &value, unsigned char min, unsigned char max,unsigned char defaultValue) const;
     bool getValue(const std::string &section, const std::string& key, std::string &value, unsigned int minLen, unsigned int maxLen, const std::string defaultValue) const;
     bool getValue(const std::string &section, const std::string& key, std::string &value, const std::string defaultValue, const std::vector<std::string>& allowedValues) const;
