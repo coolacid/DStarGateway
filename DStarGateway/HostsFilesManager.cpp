@@ -83,12 +83,13 @@ void CHostsFilesManager::clock(unsigned int ms)
 
     if(m_downloadTimer.hasExpired()) {
         UpdateHostsAsync(); // call and forget
+		m_downloadTimer.start();
     }
 }
 
 void CHostsFilesManager::setDownloadTimeout(unsigned int seconds)
 {
-    m_downloadTimer.setTimeout(seconds);
+	m_downloadTimer.start(seconds);
 }
 
 bool CHostsFilesManager::UpdateHostsFromInternet()
