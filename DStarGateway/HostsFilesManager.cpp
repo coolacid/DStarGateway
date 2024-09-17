@@ -132,7 +132,7 @@ std::future<bool> CHostsFilesManager::UpdateHostsAsync()
 void CHostsFilesManager::loadReflectors(const std::string & directory)
 {
     if (m_xlxEnabled) {
-		std::string fileName = directory + "/" + DCS_HOSTS_FILE_NAME;
+		std::string fileName = directory + "/" + XLX_HOSTS_FILE_NAME;
 		loadReflectors(fileName, DP_DCS);
 	}
 	
