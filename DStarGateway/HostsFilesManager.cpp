@@ -82,6 +82,7 @@ void CHostsFilesManager::clock(unsigned int ms)
     m_downloadTimer.clock(ms);
 
     if(m_downloadTimer.hasExpired()) {
+		CLog::logInfo("Downloading hosts files after %u hours", m_downloadTimer.getTimeout() / 3600U);
         UpdateHostsAsync(); // call and forget
 		m_downloadTimer.start();
     }
