@@ -59,10 +59,17 @@ bool CHostsFileDownloader::download(const std::string & hostsFileURL, const std:
 
 	if(ok) {
 		outFileName = std::string(outFileNameBuf);
-		ok = ok && std::filesystem::copy_file(outFileName, hostFilePath, std::filesystem::copy_options::overwrite_existing);
-		if(!ok) {
-			CLog::logError("Failed to copy host file to %s", hostFilePath.c_str());
+
+		try
+		{
+			std::filesystem::copy_file(outFileName, hostFilePath, std::filesystem::copy_options::overwrite_existing);
 		}
+		catch(std::filesystem::filesystem_error& e)
+		{
+			ok = false;
+			CLog::logError("Failed to copy host file to %s: %s", hostFilePath.c_str(), e.what());
+		}
+		
 	} else {
 		CLog::logWarning("Failed to download Host file from %s, using previous file", hostsFileURL.c_str());
 	}

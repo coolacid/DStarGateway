@@ -81,7 +81,13 @@
         "numeric": "cpp",
         "regex": "cpp",
         "cfenv": "cpp",
-        "cinttypes": "cpp"
+        "cinttypes": "cpp",
+        "charconv": "cpp",
+        "source_location": "cpp",
+        "format": "cpp",
+        "shared_mutex": "cpp",
+        "span": "cpp",
+        "text_encoding": "cpp"
     },
     "files.exclude": {
         "**/.DS_Store": true,

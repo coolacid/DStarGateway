@@ -138,7 +138,7 @@ CDStarGatewayThread::~CDStarGatewayThread()
 void* CDStarGatewayThread::Entry()
 {
 	CHostsFilesManager::setCache(&m_cache);
-	auto hostFut = CHostsFilesManager::UpdateHostsAsync(); // Do this in a separate thread
+	CHostsFilesManager::UpdateHosts(); 
 
 	// Truncate the old Links.log file
 	std::string fullName = m_logDir + "/" + LINKS_BASE_NAME + ".log";
@@ -199,7 +199,6 @@ void* CDStarGatewayThread::Entry()
 	}
 
 	// Wait here until we have the essentials to run
-	hostFut.get();
 	while (!m_killed && (m_dextraPool == NULL || m_dplusPool == NULL || m_dcsPool == NULL || m_g2HandlerPool == NULL || (m_icomRepeaterHandler == NULL && m_hbRepeaterHandler == NULL && m_dummyRepeaterHandler == NULL) || m_gatewayCallsign.empty()))
 		::std::this_thread::sleep_for(std::chrono::milliseconds(500UL));		// 1/2 sec
 

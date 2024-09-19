@@ -82,13 +82,15 @@ void CHostsFilesManager::clock(unsigned int ms)
     m_downloadTimer.clock(ms);
 
     if(m_downloadTimer.hasExpired()) {
+		CLog::logInfo("Downloading hosts files after %u hours", m_downloadTimer.getTimeout() / 3600U);
         UpdateHostsAsync(); // call and forget
+		m_downloadTimer.start();
     }
 }
 
 void CHostsFilesManager::setDownloadTimeout(unsigned int seconds)
 {
-    m_downloadTimer.setTimeout(seconds);
+	m_downloadTimer.start(seconds);
 }
 
 bool CHostsFilesManager::UpdateHostsFromInternet()
@@ -130,7 +132,7 @@ std::future<bool> CHostsFilesManager::UpdateHostsAsync()
 void CHostsFilesManager::loadReflectors(const std::string & directory)
 {
     if (m_xlxEnabled) {
-		std::string fileName = directory + "/" + DPLUS_HOSTS_FILE_NAME;
+		std::string fileName = directory + "/" + XLX_HOSTS_FILE_NAME;
 		loadReflectors(fileName, DP_DCS);
 	}
 	
