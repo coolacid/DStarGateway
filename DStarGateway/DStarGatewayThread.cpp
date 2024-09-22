@@ -55,6 +55,7 @@
 #include "Log.h"
 #include "StringUtils.h"
 #include "HostsFilesManager.h"
+#include "HostsFileDownloader.h"
 
 const std::string LOOPBACK_ADDRESS("127.0.0.1");
 
@@ -138,6 +139,7 @@ CDStarGatewayThread::~CDStarGatewayThread()
 void* CDStarGatewayThread::Entry()
 {
 	CHostsFilesManager::setCache(&m_cache);
+	CHostsFilesManager::setDownloadCallback(CHostsFileDownloader::download);
 	CHostsFilesManager::UpdateHosts(); 
 
 	// Truncate the old Links.log file

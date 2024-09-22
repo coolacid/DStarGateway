@@ -26,9 +26,12 @@
 #include "Timer.h"
 #include "DStarDefines.h"
 
+typedef bool (*HostFileDownloadCallback)(const std::string &, const std::string &);
+
 class CHostsFilesManager {
 public: 
     static void setHostFilesDirectories(const std::string & hostFilesDir, const std::string & customHostFilesDir);
+    static void setDownloadCallback(HostFileDownloadCallback downloadCallback);
     static void setDextra(bool enabled, const std::string & dextraUrl);
     static void setDCS(bool enabled, const std::string & dcsUrl);
     static void setDPlus(bool enabled, const std::string & dplusUrl);
@@ -57,6 +60,8 @@ private:
 
     static CCacheManager * m_cache;
     static CTimer m_downloadTimer;
+
+    static HostFileDownloadCallback m_downloadCallback;
 
     static void loadReflectors(const std::string & directory);
     static void loadReflectors(const std::string & hostFileName, DSTAR_PROTOCOL proto);
