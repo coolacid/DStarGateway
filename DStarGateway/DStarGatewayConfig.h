@@ -83,6 +83,12 @@ typedef struct {
 } Tpaths;
 
 typedef struct {
+	std::string downloadedHostFiles;
+	std::string customHostsFiles;
+	unsigned int downloadTimeout;
+} THostsFiles;
+
+typedef struct {
 	std::string logDir;
 	LOG_SEVERITY displayLevel;
 	LOG_SEVERITY fileLevel;
@@ -102,16 +108,19 @@ typedef struct {
 typedef struct {
 	bool enabled;
 	unsigned int maxDongles;
+	std::string hostfileUrl;
 } TDextra;
 
 typedef struct {
 	bool enabled;
 	std::string login;
 	unsigned int maxDongles;
+	std::string hostfileUrl;
 } TDplus;
 
 typedef struct {
 	bool enabled;
+	std::string hostfileUrl;
 } TDCS;
 
 typedef struct {
@@ -120,7 +129,7 @@ typedef struct {
 
 typedef struct {
 	bool enabled;
-	std::string url;
+	std::string hostfileUrl;
 } TXLX;
 
 typedef struct {
@@ -156,6 +165,7 @@ public:
 	unsigned int getRepeaterCount() const;
 	void getLog(TLog& log) const;
 	void getPaths(Tpaths & paths) const;
+	void getHostsFiles(THostsFiles & hostsFiles) const;
 	void getAPRS(TAPRS & aprs) const;
 	void getDExtra(TDextra & dextra) const;
 	void getDPlus(TDplus & dplus) const;
@@ -176,6 +186,7 @@ private:
 	bool loadRepeaters(const CConfig & cfg);
 	bool loadLog(const CConfig & cfg);
 	bool loadPaths(const CConfig & cfg);
+	bool loadHostsFiles(const CConfig & cfg);
 	bool loadAPRS(const CConfig & cfg);
 	bool loadDextra(const CConfig & cfg);
 	bool loadDPlus(const CConfig & cfg);
@@ -192,6 +203,7 @@ private:
 	std::string m_fileName;
 	TGateway m_gateway;
 	Tpaths m_paths;
+	THostsFiles m_hostsFiles;
 	TAPRS m_aprs;
 	TDextra m_dextra;
 	TDplus m_dplus;

@@ -54,6 +54,8 @@
 #include "Defs.h"
 #include "Log.h"
 #include "StringUtils.h"
+#include "HostsFilesManager.h"
+#include "HostsFileDownloader.h"
 
 const std::string LOOPBACK_ADDRESS("127.0.0.1");
 
@@ -88,7 +90,6 @@ m_dplusMaxDongles(0U),
 m_dplusLogin(),
 m_dcsEnabled(true),
 m_xlxEnabled(true),
-m_xlxHostsFileName(),
 m_ccsEnabled(true),
 m_ccsHost(),
 m_infoEnabled(true),
@@ -137,6 +138,10 @@ CDStarGatewayThread::~CDStarGatewayThread()
 
 void* CDStarGatewayThread::Entry()
 {
+	CHostsFilesManager::setCache(&m_cache);
+	CHostsFilesManager::setDownloadCallback(CHostsFileDownloader::download);
+	CHostsFilesManager::UpdateHosts(); 
+
 	// Truncate the old Links.log file
 	std::string fullName = m_logDir + "/" + LINKS_BASE_NAME + ".log";
 	if (!m_name.empty()) {
@@ -217,9 +222,6 @@ void* CDStarGatewayThread::Entry()
 			headerLogger = NULL;
 		}
 	}
-
-	loadGateways();
-	loadAllReflectors();
 
 	CG2Handler::setG2ProtocolHandlerPool(m_g2HandlerPool);
 	CG2Handler::setHeaderLogger(headerLogger);
@@ -406,16 +408,16 @@ void* CDStarGatewayThread::Entry()
 	}
 	catch (std::exception& e) {
 		std::string message(e.what());
-		CLog::logFatal("Exception raised in the main thread - \"%s\"", message.c_str());
+		CLog::logFatal("Exception raised in the DStar Gateway thread - \"%s\"", message.c_str());
 		throw;
 	}
 	catch (...) {
-		CLog::logFatal("Unknown exception raised in the main thread");
+		CLog::logFatal("Unknown exception raised in the DStar Gateway thread");
 		throw;
 	}
 #endif
 
-	CLog::logInfo("Stopping the ircDDB Gateway thread");
+	CLog::logInfo("Stopping the DStar Gateway thread");
 
 	// Unlink from all reflectors
 	CDExtraHandler::unlink();
@@ -599,10 +601,9 @@ void CDStarGatewayThread::setDCS(bool enabled)
 	m_dcsEnabled = enabled;
 }
 
-void CDStarGatewayThread::setXLX(bool enabled, const std::string& xlxHostsFileName)
+void CDStarGatewayThread::setXLX(bool enabled)
 {
 	m_xlxEnabled 	 = enabled;
-	m_xlxHostsFileName = xlxHostsFileName;
 }
 
 #ifdef USE_CCS
@@ -1139,81 +1140,6 @@ void CDStarGatewayThread::processDD()
 
 		delete data;
 	}
-}
-
-void CDStarGatewayThread::loadGateways()
-{
-	std::string fileName = m_dataDir + "/" + GATEWAY_HOSTS_FILE_NAME;
-	loadReflectors(fileName, DP_DEXTRA);
-}
-
-void CDStarGatewayThread::loadAllReflectors()
-{
-	if (m_xlxEnabled) {
-		loadReflectors(m_xlxHostsFileName, DP_DCS);
-	}
-	
-	if (m_dplusEnabled) {
-		std::string fileName = m_dataDir + "/" + DPLUS_HOSTS_FILE_NAME;
-		loadReflectors(fileName, DP_DPLUS);
-	}
-
-	if (m_dextraEnabled) {
-		std::string fileName = m_dataDir + "/" + DEXTRA_HOSTS_FILE_NAME;
-		loadReflectors(fileName, DP_DEXTRA);
-	}
-
-	if (m_dcsEnabled) {
-		std::string fileName = m_dataDir + "/" + DCS_HOSTS_FILE_NAME;
-		loadReflectors(fileName, DP_DCS);
-	}
-}
-
-void CDStarGatewayThread::loadReflectors(std::string hostFileName, DSTAR_PROTOCOL proto)
-{
-	unsigned int count = 0U;
-
-	CHostFile hostFile(hostFileName, false);
-	for (unsigned int i = 0U; i < hostFile.getCount(); i++) {
-		std::string reflector = hostFile.getName(i);
-		in_addr address    = CUDPReaderWriter::lookup(hostFile.getAddress(i));
-		bool lock          = hostFile.getLock(i);
-
-		if (address.s_addr != INADDR_NONE) {
-			unsigned char* ucp = (unsigned char*)&address;
-
-			std::string addrText;
-			addrText = CStringUtils::string_format("%u.%u.%u.%u", ucp[0U] & 0xFFU, ucp[1U] & 0xFFU, ucp[2U] & 0xFFU, ucp[3U] & 0xFFU);
-
-			if (lock)
-				CLog::logInfo("Locking %s to %s", reflector.c_str(), addrText.c_str());
-
-			reflector.resize(LONG_CALLSIGN_LENGTH - 1U, ' ');
-			reflector += "G";
-			m_cache.updateGateway(reflector, addrText, proto, lock, true);
-
-			count++;
-		}
-	}
-
-	std::string protoString;
-	switch (proto)
-	{
-	case DP_DEXTRA:
-		protoString =  "DExtra";
-		break;
-	case DP_DCS:
-		protoString = "DCS";
-		break;
-	case DP_DPLUS:
-		protoString = "DPlus";
-		break;
-	default:
-		// ???
-		break;
-	}
-
-	CLog::logInfo("Loaded %u of %u %s hosts from %s", count, hostFile.getCount(), protoString.c_str() , hostFileName.c_str());
 }
 
 void CDStarGatewayThread::writeStatus()

@@ -117,6 +117,7 @@ install : DStarGateway/dstargateway DGWRemoteControl/dgwremotecontrol
 	@mkdir -p $(BIN_DIR)
 	@mkdir -p $(LOG_DIR)
 	@chown dstar:dstar $(LOG_DIR)
+	@chown dstar:dstar $(DATA_DIR)
 
 # Install data
 	$(MAKE) -C Data install
