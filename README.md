@@ -156,6 +156,7 @@ The testing framwework used is Google Test.
 
 # 6. Version History
 ## 6.1. Version 1.0
+- [**Improvement**] Automatically download hosts files on startup. It is also possible to specify custom hosts files to override hosts from the internet. Needs some configuration adjustement, see example.cfg. ([#50](https://github.com/F4FXL/DStarGateway/issues/50))
 - [**Improvement**] Limit log reporting ([#44](https://github.com/F4FXL/DStarGateway/issues/44))
 - [**Improvement**] Improve CI to include all variants of build configurations ([#40](https://github.com/F4FXL/DStarGateway/issues/40))
 - [**Bugfix**] Fix #43 Cache not updated when answering ircddb gateway is only conected to one network ([#43](https://github.com/F4FXL/DStarGateway/issues/43))
