@@ -15,6 +15,7 @@ services:
         volumes:
             - ./docker-data:/usr/local/etc/dstargateway.d/
             - ./docker-logs:/var/log/dstargateway/
+            - ./docker-custom-hosts:/usr/local/share/dstargateway.d/hostfiles.d/
         entrypoint: /start-dstargateway.sh
 
     dstartimeserver:

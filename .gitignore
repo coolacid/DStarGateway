@@ -1,6 +1,7 @@
 # Docker Related
 docker-data
 docker-logs
+docker-custom-hosts
 
 # Prerequisites
 *.d
