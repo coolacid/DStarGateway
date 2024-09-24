@@ -17,8 +17,8 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ifndef	IRCDDBGatewayThread_H
-#define	IRCDDBGatewayThread_H
+#ifndef	DStarGatewayThread_H
+#define	DStarGatewayThread_H
 
 #include "DummyRepeaterProtocolHandler.h"
 #include "IcomRepeaterProtocolHandler.h"
@@ -61,7 +61,7 @@ public:
 	virtual void setDExtra(bool enabled, unsigned int maxDongles);
 	virtual void setDPlus(bool enabled, unsigned int maxDongles, const std::string& login);
 	virtual void setDCS(bool enabled);
-	virtual void setXLX(bool enabled, const std::string& fileName);
+	virtual void setXLX(bool enabled);
 #ifdef USE_CCS
 	virtual void setCCS(bool enabled, const std::string& host);
 #endif
@@ -112,7 +112,6 @@ private:
 	std::string                  m_dplusLogin;
 	bool                      m_dcsEnabled;
 	bool			  m_xlxEnabled;
-	std::string		  m_xlxHostsFileName;
 	bool                      m_ccsEnabled;
 	std::string                  m_ccsHost;
 	bool                      m_infoEnabled;
@@ -146,14 +145,6 @@ private:
 	void processDCS();
 	void processG2();
 	void processDD();
-
-	void loadGateways();
-	void loadAllReflectors();
-	void loadReflectors(std::string hostFileName, DSTAR_PROTOCOL proto);
-	void loadDExtraReflectors(const std::string& fileName);
-	void loadDPlusReflectors(const std::string& fileName);
-	void loadDCSReflectors(const std::string& fileName);
-	void loadXLXReflectors();
 
 	void writeStatus();
 

@@ -18,33 +18,34 @@
  
 #include <stdio.h>
 #include <cstdio>
+#include <filesystem>
 #include <curl/curl.h>
 
-#include "XLXHostsFileDownloader.h"
+#include "HostsFileDownloader.h"
 #include "Log.h"
  
-size_t CXLXHostsFileDownloader::write_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
+size_t CHostsFileDownloader::write_data(void *ptr, size_t size, size_t nmemb, FILE *stream)
 {
     size_t written = fwrite(ptr, size, nmemb, stream);
     return written;
 }
 
-/* wxHTTP randomly crashes when called on a worker thread, this must be called from main thread ! */
-std::string CXLXHostsFileDownloader::download(const std::string & xlxHostsFileURL)
+
+bool CHostsFileDownloader::download(const std::string & hostsFileURL, const std::string & hostFilePath)
 {
     CURL *curl;
     FILE *fp;
     bool ok = false;
 	std::string outFileName;
-	char outFileNameBuf[] = "/tmp/XLXHostFile_XXXXXX";
+	char outFileNameBuf[] = "/tmp/HostFile_XXXXXX";
 
-	CLog::logInfo("Downloading XLX host file from %s", xlxHostsFileURL.c_str());
+	CLog::logInfo("Downloading host file from %s", hostsFileURL.c_str());
 
     curl = curl_easy_init();
     if (curl) {
         int filedes = mkstemp(outFileNameBuf);
-		if(filedes > 0 && (fp = fdopen(filedes,"wb")) != NULL) {
-			curl_easy_setopt(curl, CURLOPT_URL, xlxHostsFileURL.c_str());
+		if(filedes > 0 && (fp = fdopen(filedes,"wb")) != nullptr) {
+			curl_easy_setopt(curl, CURLOPT_URL, hostsFileURL.c_str());
 			curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
 			curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
 			CURLcode res = curl_easy_perform(curl);
@@ -58,9 +59,20 @@ std::string CXLXHostsFileDownloader::download(const std::string & xlxHostsFileUR
 
 	if(ok) {
 		outFileName = std::string(outFileNameBuf);
+
+		try
+		{
+			std::filesystem::copy_file(outFileName, hostFilePath, std::filesystem::copy_options::overwrite_existing);
+		}
+		catch(std::filesystem::filesystem_error& e)
+		{
+			ok = false;
+			CLog::logError("Failed to copy host file to %s: %s", hostFilePath.c_str(), e.what());
+		}
+		
 	} else {
-		CLog::logError("Failed to download XLx Host file from %s", xlxHostsFileURL.c_str());
+		CLog::logWarning("Failed to download Host file from %s, using previous file", hostsFileURL.c_str());
 	}
 
-	return outFileName;
+	return ok;
 }

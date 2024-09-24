@@ -170,7 +170,7 @@ bool CConfig::getValue(const std::string &section, const std::string& key, doubl
     return true;
 }
 
-bool CConfig::getValue(const std::string &section, const std::string& key, unsigned int &value, unsigned int min, unsigned int max, int defaultValue) const
+bool CConfig::getValue(const std::string &section, const std::string& key, unsigned int &value, unsigned int min, unsigned int max, unsigned int defaultValue) const
 {
     TConfigValue * val = lookupValue(section, key);
     if(val == nullptr || val->m_value.empty()) {
