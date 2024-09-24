@@ -19,7 +19,6 @@
 #include <cassert>
 
 #include "HostsFilesManager.h"
-#include "HostsFileDownloader.h"
 #include "HostFile.h"
 #include "StringUtils.h"
 #include "UDPReaderWriter.h"
@@ -41,10 +40,17 @@ std::string CHostsFilesManager::m_xlxUrl("");
 CCacheManager * CHostsFilesManager::m_cache = nullptr;
 CTimer CHostsFilesManager::m_downloadTimer(1000U, 60 * 60 * 24);
 
+HostFileDownloadCallback CHostsFilesManager::m_downloadCallback = nullptr;
+
 void CHostsFilesManager::setHostFilesDirectories(const std::string & hostFilesDir, const std::string & customHostFilesDir)
 {
     m_hostFilesDirectory.assign(hostFilesDir);
     m_customFilesDirectory.assign(customHostFilesDir);
+}
+
+void CHostsFilesManager::setDownloadCallback(HostFileDownloadCallback callback)
+{
+	m_downloadCallback = callback;
 }
 
 void CHostsFilesManager::setDextra(bool enabled, const std::string & url)
@@ -97,10 +103,10 @@ bool CHostsFilesManager::UpdateHostsFromInternet()
 {
     CLog::logInfo("Updating hosts files from internet");
     bool ret = true;
-    if(m_dextraEnabled && !m_dextraUrl.empty()) ret = CHostsFileDownloader::download(m_dextraUrl, m_hostFilesDirectory + "/" + DEXTRA_HOSTS_FILE_NAME) && ret;
-    if(m_dcsEnabled    && !m_dcsUrl.empty())    ret = CHostsFileDownloader::download(m_dcsUrl, m_hostFilesDirectory + "/" + DCS_HOSTS_FILE_NAME) && ret;
-    if(m_dplusEnabled  && !m_dplusUrl.empty())  ret = CHostsFileDownloader::download(m_dplusUrl, m_hostFilesDirectory + "/" + DPLUS_HOSTS_FILE_NAME) && ret;
-    if(m_xlxEnabled    && !m_xlxUrl.empty())    ret = CHostsFileDownloader::download(m_xlxUrl, m_hostFilesDirectory + "/" + XLX_HOSTS_FILE_NAME) && ret;
+    if(m_dextraEnabled && !m_dextraUrl.empty()) ret = m_downloadCallback(m_dextraUrl, m_hostFilesDirectory + "/" + DEXTRA_HOSTS_FILE_NAME) && ret;
+    if(m_dcsEnabled    && !m_dcsUrl.empty())    ret = m_downloadCallback(m_dcsUrl, m_hostFilesDirectory + "/" + DCS_HOSTS_FILE_NAME) && ret;
+    if(m_dplusEnabled  && !m_dplusUrl.empty())  ret = m_downloadCallback(m_dplusUrl, m_hostFilesDirectory + "/" + DPLUS_HOSTS_FILE_NAME) && ret;
+    if(m_xlxEnabled    && !m_xlxUrl.empty())    ret = m_downloadCallback(m_xlxUrl, m_hostFilesDirectory + "/" + XLX_HOSTS_FILE_NAME) && ret;
 
     if(!ret) CLog::logWarning("Some hosts files failed to downlaod");
 

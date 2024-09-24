@@ -65,6 +65,7 @@ All the features found in ircddbGateway are supposed to be working. Except the o
 - DPlus, DExtra and G2 NAT Traversal using ircddb network as rendez-vous server. I.e. it is not required to open firewall ports for Callsign Routing or Gateway calls. however it is still recommended to do so. But NAT Traversal will bring more flexibility when operating on CGNAT (Mobile) Networks.
 - Forward RSMS1A app messages from/to  APRS-IS Network, yes you can send/receive messages to and from aprs. Yes, you can send messages to APRS stations and Vice Versa. Additionnally, part of the message is sent as Text Dat in the slow data. This allows you to read the message directly on your radio screen.
 - Repeater Link status is sent to APRS-IS as a status frame
+- Built-in download of hosts files
 
 # 3. Building and installing
 ## 3.1. Initial setup
@@ -134,6 +135,7 @@ To update host files, from within the source code directory, run
 sudo make newhostfiles
 sudo systemctl restart dstargateway.service
 ```
+or juste configure and run the software and it will download latest host files.
 # 4. Dashboard
 @johnhays K7VE has developed a nice lightweight NodeJS dashboard. Code and instructions can be found on his [GitHub](https://github.com/johnhays/dsgwdashboard). 
 
@@ -156,6 +158,7 @@ The testing framwework used is Google Test.
 
 # 6. Version History
 ## 6.1. Version 1.0
+- [**Improvement**] Automatically download hosts files on startup. It is also possible to specify custom hosts files to override hosts from the internet. Needs some configuration adjustement, see example.cfg. ([#50](https://github.com/F4FXL/DStarGateway/issues/50))
 - [**Improvement**] Limit log reporting ([#44](https://github.com/F4FXL/DStarGateway/issues/44))
 - [**Improvement**] Improve CI to include all variants of build configurations ([#40](https://github.com/F4FXL/DStarGateway/issues/40))
 - [**Bugfix**] Fix #43 Cache not updated when answering ircddb gateway is only conected to one network ([#43](https://github.com/F4FXL/DStarGateway/issues/43))
